@@ -1,58 +1,67 @@
 #include <iostream>
+#include <string>
 #include <vector>
 
-class Draw
-{
-public:
-	void doSomething()
-	{
-		std::cout << "Draw" << std::endl;
-	}
-};
+//template <class TT> 
+////class Vector2D
+////{
+////public:
+////	TT x_, y_;
+////	
+////	Vector2D(const TT& x_input, const TT& y_input)
+////		:x_(x_input), y_(y_input)
+////	{}
+////
+////	void print()
+////	{
+////		std::cout << x_ << " " << y_ << std::endl;
+////	}
+////};
 
-class Move 
+template <class TT, class TTT>
+class Vector2D
 {
 public:
-	void doSomething()
-	{
-		std::cout << "Move" << std::endl;
-	}
-};
+	TT x_;
+	TTT y_;
+	
+	Vector2D(const TT& x_input, const TTT& y_input)
+		:x_(x_input), y_(y_input)
+	{}
 
-class GeometricObjectInterface
-{
-public:
-	virtual void doSomething() = 0;
-};
-
-template <class TT>
-class GeometricObject :public GeometricObjectInterface
-{
-public:
-	void doSomething()
+	void print()
 	{
-		TT operation;
-		operation.doSomething();
+		std::cout << x_ << " " << y_ << std::endl;
 	}
 };
 
 int main()
 {
-	std::vector<GeometricObjectInterface*> obj_list;
+	//Vector2D<int> int_vec(1, 1);
+	//int_vec.print();
 
-	obj_list.push_back(new GeometricObject<Draw>);
-	obj_list.push_back(new GeometricObject<Move>);
+	//Vector2D<std::string> str_vector("Hello", "I`m hungry");
+	//str_vector.print();
 
-	for (auto itr : obj_list)
-		itr->doSomething();
+	Vector2D<std::string, int> str_int_vector("Hello", 123123);
+	str_int_vector.print();
 
-	GeometricObject<Draw> draw_obj;
-	GeometricObject<Move> move_obj;
 	
-	draw_obj.doSomething();
-	move_obj.doSomething();
 }
-//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //#include <iostream>
 //#include <string>
 //#include <vector>
