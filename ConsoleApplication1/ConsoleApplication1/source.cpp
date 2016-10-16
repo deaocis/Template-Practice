@@ -25,6 +25,7 @@ Object *p_bullet_array[MAX_BULLETS];
 //Object *p_bullet = NULL;	
 
 int score = 0;
+//score always important
 
 char front_buffer[SCR_HEIGHT][SCR_WIDTH];
 char back_buffer[SCR_HEIGHT][SCR_WIDTH];
