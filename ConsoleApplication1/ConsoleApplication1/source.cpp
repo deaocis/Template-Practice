@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <Windows.h>
 #include <conio.h>
+#include <iostream>
 
 #define SCR_WIDTH 40
 #define SCR_HEIGHT 20
@@ -16,16 +17,92 @@ typedef struct
 	int pos_y;
 
 	char *image_;
-} Object;
+}Object;
 
-Object player;
-Object enemy;
+class GeometricObject
+{
+public:
+	virtual void draw()
+	{
+		std::cout << "Error!" << std::endl;
+	}
+};
+
+class Player :public GeometricObject
+{
+public:
+	int state;
+	int width;
+	int height;
+
+	int pos_x;
+	int pos_y;
+
+	char *image_;
+
+	Player(const int& _width, const int& _height, 
+			const int& _pos_x, const int& _pos_y, char *_image_)
+	{
+		initialize(_width, _height, _pos_x, _pos_y,_image_);
+	}
+
+	void initialize(const int& _width, const int& _height,
+					const int& _pos_x, const int& _pos_y,char *_image_)
+	{
+		width = _width;
+		height = _height;
+		pos_x = _pos_x;
+		pos_y = _pos_y;
+		image_ = _image_;
+	}
+
+	void draw()
+	{
+		drawToBackBuffer(pos_x, pos_y, image_);
+	}
+};
+
+class Enemy :public GeometricObject
+{
+	int state;
+	int width;
+	int height;
+
+	int pos_x;
+	int pos_y;
+
+	char *image_;
+
+	Enemy(const int& _state, const int& _width, const int& _height,
+		const int& _pos_x, const int& _pos_y, char *_image_)
+	{
+		initialize(_state, _width, _height, _pos_x, _pos_y, _image_);
+	}
+
+	void initialize(const int& _state, const int& _width, const int& _height,
+		const int& _pos_x, const int& _pos_y, char *_image_)
+	{
+		state = _state;
+		width = _width;
+		height = _height;
+		pos_x = _pos_x;
+		pos_y = _pos_y;
+		image_ = _image_;
+	}
+
+	void draw()
+	{
+		drawToBackBuffer(pos_x, pos_y, image_);
+	}
+};
+
+//Object player;
+//Object enemy;
 
 Object *p_bullet_array[MAX_BULLETS];
 //Object *p_bullet = NULL;	
 
 int score = 0;
-//score always important
 
 char front_buffer[SCR_HEIGHT][SCR_WIDTH];
 char back_buffer[SCR_HEIGHT][SCR_WIDTH];
@@ -36,6 +113,14 @@ void render();
 void shootBullet();
 void drawBoundary();
 void drawAll();
+
+GeometricObject **my_objects = new GeometricObject*[2];
+
+void draw_PlayerAndEnemy()
+{
+	for (int i = 0; i < 2; i++)
+		my_objects[i]->draw();
+}
 
 int main()
 {
@@ -56,18 +141,12 @@ int main()
 	{
 		p_bullet_array[b] = NULL;
 	}
-	player.pos_x = 10;
-	player.pos_y = 3;
-	player.image_ = "<-O->";
-	player.width = 5;
-	player.height = 1;
+	
+	//initialize Player
+	my_objects[0] = new Player(5, 1, 10, 3, "<-O->");
 
-	enemy.state = 0;
-	enemy.pos_x = 15;
-	enemy.pos_y = SCR_HEIGHT-3;
-	enemy.image_ = "(O_O)\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<";
-	enemy.width = 5;
-	enemy.height = 1;
+	//initialize Enemy
+	my_objects[1] = new Enemy(0, 5, 1, 15, SCR_HEIGHT - 3, "(O_O)\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<\0>XoX<");
 
 	while (1)    //main game loop
 	{
