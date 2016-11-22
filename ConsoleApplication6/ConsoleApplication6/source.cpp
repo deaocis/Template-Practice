@@ -50,8 +50,8 @@ public:
 	
 	void printSigned(const float& v)
 	{
-		if (v > 0.0f) printf("%f",v );   //+%1.f
-		else if (v < 0.0f) printf("%f", v);
+		if (v > 0.0f) printf("%1.2f",v );   //+%1.f
+		else if (v < 0.0f) printf("%1.2f", v);
 		else
 			printf(" 0.0");
 	}
@@ -64,8 +64,8 @@ public:
 			{
 				CellData &cell = GetCellData(i, j);
 
-				printf("    "); printSigned(cell.q_[0]); printf("    ");  //up
-				printf("    ");
+				printf("      "); printSigned(cell.q_[0]); printf("       ");  //up
+				printf("      ");
 			}
 
 			printf("\n");
@@ -74,8 +74,8 @@ public:
 			{
 				CellData &cell = GetCellData(i, j);
 
-				printSigned(cell.q_[2]); printf("    "); printSigned(cell.q_[3]);  //left, right
-				printf("      ");
+				printSigned(cell.q_[2]); printf("       "); printSigned(cell.q_[3]);  //left, right
+				printf("        ");
 			}
 			if (j == 1)
 				printf("Reward:+1");
@@ -87,8 +87,8 @@ public:
 			{
 				CellData &cell = GetCellData(i, j);
 
-				printf("    "); printSigned(cell.q_[1]); printf("    ");   //down
-				printf("    ");
+				printf("      "); printSigned(cell.q_[1]); printf("      ");   //down
+				printf("       ");
 			}
 			printf("\n\n");
 		}
@@ -195,8 +195,8 @@ int main()
 		}
 
 		//cout << world.GetCellData(i_old, j_old).q_[action] << endl;
-		cout << "Agent status: " << my_agent.i_ << "   " << my_agent.j_ << endl;
-		cout << "action " << action << endl <<endl ;
+		//cout << "Agent status: " << my_agent.i_ << "   " << my_agent.j_ << endl;
+		//cout << "action " << action << endl <<endl ;
 
 		//world.print();
 	}
