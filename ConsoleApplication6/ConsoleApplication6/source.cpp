@@ -39,19 +39,19 @@ public:
 
 	bool IsInsideGrid(const int& i, const int& j)
 	{
-		if (i > i_num) return false;
-		if (j > j_num) return false;
+		if (i >= i_num) return false;
+		if (j >= j_num) return false;
 		if (i < 0) return false;
 		if (j < 0) return false;
-		//if (i == 2 && j == 0) return false;	
+		//if (i == 2 && j == 0) return true;	
 		//if (i == 2 && j == 1) return true;
 		return true;
 	}
 	
 	void printSigned(const float& v)
 	{
-		if (v > 0.0f) printf("+%1.1f",v );
-		else if (v < 0.0f) printf("+%1.f", v);
+		if (v > 0.0f) printf("%f",v );   //+%1.f
+		else if (v < 0.0f) printf("%f", v);
 		else
 			printf(" 0.0");
 	}
@@ -60,7 +60,7 @@ public:
 	{
 		for (int j = j_num - 1; j >= 0; j--)       //i_num=3, j_num=2
 		{
-			for (int i = 0; i < i_num; i++)
+			for (int i = 0; i < i_num-1; i++)
 			{
 				CellData &cell = GetCellData(i, j);
 
@@ -70,17 +70,20 @@ public:
 
 			printf("\n");
 
-			for (int i = 0; i < i_num; i++)
+			for (int i = 0; i < i_num - 1; i++)
 			{
 				CellData &cell = GetCellData(i, j);
 
 				printSigned(cell.q_[2]); printf("    "); printSigned(cell.q_[3]);  //left, right
-				printf("    ");
+				printf("      ");
 			}
-
+			if (j == 1)
+				printf("Reward:+1");
+			else
+				printf("Reward:-1");
 			printf("\n");
 
-			for (int i = 0; i < i_num; i++)
+			for (int i = 0; i < i_num - 1; i++)
 			{
 				CellData &cell = GetCellData(i, j);
 
@@ -108,63 +111,81 @@ int main()
 {
 	cout << "Hello GridWorld!" << endl << endl;
 	const int i_res = 3, j_res = 2;
-
-	GridWorld world(i_res, j_res);
+	
 	CellData data;
+	GridWorld world(i_res, j_res);
+	Agent my_agent;
 
 	for (int j = 0; j < j_res; j++)
+	{
 		for (int i = 0; i < i_res; i++)
 		{
 			world.GetCellData(i, j).reward = -0.1;   //밑에 2줄까지 합쳐서 reward칸외엔 보상이 -0.1
 		}
+	}
+
 	world.GetCellData(2, 1).reward = 1.0;
 	world.GetCellData(2, 0).reward = -1.0;
 	
-	Agent my_agent;
+	
 
 	world.print();
 
-	for (int t = 0; t < 1000; t++)
+	for (int t = 0; t < 10000; t++)
 	{
-		const int action = rand() % 4;
-		int i = my_agent.i_, j = my_agent.j_;   //i=0, my_agent.i_=0
-		int i_old = i, j_old = j;               //i_old=0, j_old=0
+		const int action = rand() % 4;          //action=0,1,2,3
+		int i = my_agent.i_;
+		int j = my_agent.j_;   //i=0, my_agent.i_=0
+		int i_old = i;
+		int j_old = j;               //i_old=0, j_old=0
 		
 		//Q(s_t,a_t)=Q(s_t,a_t)+ lr*((r_t+1)+df*maxQ_a(s_t+1, a)-Q(s_t,a_t))
-		float learning_rate = 0.00001f;
+		float learning_rate = 0.001f;
 		float discount_factor = 0.9f;
 
 		switch (action)       //move agent
 		{
 		case 0:
-			my_agent.j_++;
+			j++;
 			break; //up
 		case 1:
-			my_agent.j_--;
+			j--;
 			break;  //down
 		case 2:
-			my_agent.i_--;
+			i--;
 			break;   //left
 		case 3:
-			my_agent.i_++;
+			i++;
 			break;   //right
 		}
 
 		if (world.IsInsideGrid(i,j) == true)
 		{
-		
-			//move agent
+			switch (action)       //move agent
+			{
+			case 0:
+				my_agent.j_++;
+				break; //up
+			case 1:
+				my_agent.j_--;
+				break;  //down
+			case 2:
+				my_agent.i_--;     
+				break;   //left
+			case 3:
+				my_agent.i_++;
+				break;   //right
+			}
 
 			//update reward(r_t) -> ????????
 
-
-			world.GetCellData(i_old ,j_old).q_[action] += learning_rate*(world.GetCellData(my_agent.i_, my_agent.j_).reward+ discount_factor*MAX4(world.GetCellData(i_old, j_old).q_[0], world.GetCellData(i_old, j_old).q_[1], world.GetCellData(i_old, j_old).q_[2], world.GetCellData(i_old, j_old).q_[3]) - world.GetCellData(i_old, j_old).q_[action]);
+			world.GetCellData(i_old ,j_old).q_[action] += learning_rate*(world.GetCellData(my_agent.i_, my_agent.j_).reward+ discount_factor*MAX4(world.GetCellData(my_agent.i_, my_agent.j_).q_[0], world.GetCellData(my_agent.i_, my_agent.j_).q_[1], world.GetCellData(my_agent.i_, my_agent.j_).q_[2], world.GetCellData(my_agent.i_, my_agent.j_).q_[3]) - world.GetCellData(i_old, j_old).q_[action]);
 			//update q values of previous cell (q_t)
 
 			if (my_agent.i_ == 2)
 			{
-				my_agent.i_ == 0;
-				my_agent.j_ == 0;
+				my_agent.i_ = 0;
+				my_agent.j_ = 0;
 			}
 			//reset if agent is in final cells
 		}
@@ -173,8 +194,9 @@ int main()
 			//you may give negative reward(penalty) to agent
 		}
 
-		//cout << "Agent status: " << my_agent.i_ << "  " << my_agent.j_ << endl;
-		//cout << "action " << action << endl;
+		//cout << world.GetCellData(i_old, j_old).q_[action] << endl;
+		cout << "Agent status: " << my_agent.i_ << "   " << my_agent.j_ << endl;
+		cout << "action " << action << endl <<endl ;
 
 		//world.print();
 	}
@@ -182,4 +204,4 @@ int main()
 	world.print();
 
 	return 0;
-}
+}       
