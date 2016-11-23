@@ -131,7 +131,7 @@ int main()
 
 	world.print();
 
-	for (int t = 0; t < 10000; t++)
+	for (int t = 0; t < 100000; t++)
 	{
 		const int action = rand() % 4;          //action=0,1,2,3
 		int i = my_agent.i_;
@@ -140,7 +140,7 @@ int main()
 		int j_old = j;               //i_old=0, j_old=0
 		
 		//Q(s_t,a_t)=Q(s_t,a_t)+ lr*((r_t+1)+df*maxQ_a(s_t+1, a)-Q(s_t,a_t))
-		float learning_rate = 0.001f;
+		float learning_rate = 0.01f;
 		float discount_factor = 0.9f;
 
 		switch (action)       //move agent
