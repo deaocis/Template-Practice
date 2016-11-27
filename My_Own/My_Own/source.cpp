@@ -1,14 +1,14 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdlib.h>
+
 #include <iostream>
 
 #define MAX2(a,b)              ((a)>(b) ? (a):(b))
 #define MAX3(a,b,c)            MAX2(MAX2(a,b),(c))
 #define MAX4(a,b,c,d)          MAX2(MAX3(a,b,c),(d))
 
-#define SCR_WIDTH 45   //원래 75
+#define SCR_WIDTH 45   
 #define SCR_HEIGHT 20
 #define MAX_BULLETS 5
 #define MAX_E_BULLETS 4
@@ -242,37 +242,38 @@ void main()
 	while (true)                  // main game loop
 	{
 
-		/*if (world.IsInsideGrid(player.pos_x_, player.pos_y_) == true)
-		{*/
-		/*player.pos_x_ = 1; player.pos_y_ = 1;*/
-		double result = 0.0;
-		result = MAX4(world.GetCellData(player.pos_x_, player.pos_y_).q_[0], world.GetCellData(player.pos_x_, player.pos_y_).q_[1], world.GetCellData(player.pos_x_, player.pos_y_).q_[2], world.GetCellData(player.pos_x_, player.pos_y_).q_[3]);
-
-		if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[0])
+		if (world.IsInsideGrid(player.pos_x_, player.pos_y_) == true)
 		{
-			player.pos_y_++;
+			player.pos_x_ = 2; player.pos_y_ = 2;
+			double result = 0.0;
+			result = MAX4(world.GetCellData(player.pos_x_, player.pos_y_).q_[0], world.GetCellData(player.pos_x_, player.pos_y_).q_[1], world.GetCellData(player.pos_x_, player.pos_y_).q_[2], world.GetCellData(player.pos_x_, player.pos_y_).q_[3]);
+
+			if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[0])
+			{
+				player.pos_y_++;
+			}
+
+			else if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[1])
+			{
+				player.pos_y_--;
+			}
+
+			else if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[2])
+			{
+				player.pos_x_--;
+			}
+
+			else if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[3])
+			{
+				player.pos_x_++;
+			}
+
+			if (player.pos_x_ == 43 && player.pos_y_ == 19)
+			{
+				Gameover();
+			}
 		}
 
-		else if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[1])
-		{
-			player.pos_y_--;
-		}
-
-		else if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[2])
-		{
-			player.pos_x_--;
-		}
-
-		else if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[3])
-		{
-			player.pos_x_++;
-		}
-
-		if (player.pos_x_ == 43 && player.pos_y_ == 19)
-		{
-			Gameover();
-		}
-		//}
 		//1. q[0], q[1], q[2], q[3]중에 큰 쪽으로 이동   ->q[0]=up , q[1]=down,  q[2]=left, q[3]=right
 		//2. (73,19)에 이동하면 
 		//3. return 0;
