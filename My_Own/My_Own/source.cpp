@@ -238,14 +238,13 @@ void main()
 			//reset if agent is in final cells
 		}
 	}
-
+	player.pos_x_ = 10; player.pos_y_ = 10;
 	while (true)                  // main game loop
 	{
-
+		
 		if (world.IsInsideGrid(player.pos_x_, player.pos_y_) == true)
 		{
-			player.pos_x_ = 2; player.pos_y_ = 2;
-			double result = 0.0;
+			double result;
 			result = MAX4(world.GetCellData(player.pos_x_, player.pos_y_).q_[0], world.GetCellData(player.pos_x_, player.pos_y_).q_[1], world.GetCellData(player.pos_x_, player.pos_y_).q_[2], world.GetCellData(player.pos_x_, player.pos_y_).q_[3]);
 
 			if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[0])
