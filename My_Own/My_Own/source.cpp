@@ -9,7 +9,7 @@
 #define MAX4(a,b,c,d)          MAX2(MAX3(a,b,c),(d))
 
 #define SCR_WIDTH 10   
-#define SCR_HEIGHT 8
+#define SCR_HEIGHT 10
 #define MAX_BULLETS 5
 #define MAX_E_BULLETS 4
 #define POWER_BULLETS 2
@@ -52,8 +52,8 @@ public:
 	{
 		if (i >= i_num) return false;
 		if (j >= j_num) return false;
-		if (i <= 0) return false;
-		if (j <= 0) return false;
+		if (i < 0) return false;
+		if (j < 0) return false;
 		return true;
 	}
 };
@@ -105,7 +105,7 @@ void drawBoundary();       //°æ°è¼± ±ß±â
 int main()
 {
 	my_player player, reward;
-	enemy enemy, enemy1, enemy2, enemy3/*, enemy4, enemy5, enemy6, enemy7, enemy8, enemy9*/;
+	enemy enemy, enemy1, enemy2, enemy3;
 	for (int j = 0; j < SCR_HEIGHT; j++)
 		for (int i = 0; i < SCR_WIDTH; i++)
 		{
@@ -120,41 +120,17 @@ int main()
 
 	player.image_ = "O";
 	player.pos_x_ = 1;
-	player.pos_y_ = 1;
+	player.pos_y_ = 9;
 
 	reward.image_ = "!";
-	reward.pos_x_ = 9;
-	reward.pos_y_ = 7;
+	reward.pos_x_ = 6;
+	reward.pos_y_ = 5;
 
-	enemy.pos_x_ = 3;
-	enemy.pos_y_ = 3;
+	enemy.pos_x_ = 6;
+	enemy.pos_y_ = 6;
 
-	//enemy1.pos_x_ = 4;
-	//enemy1.pos_y_ = 3;
-
-	//enemy2.pos_x_ = 5;
-	//enemy2.pos_y_ = 3;
-
-	//enemy3.pos_x_ = 6;
-	//enemy3.pos_y_ = 2;
-
-	//enemy4.pos_x_ = 17;
-	//enemy4.pos_y_ = 4;
-
-	//enemy5.pos_x_ = 24;
-	//enemy5.pos_y_ = 10;
-
-	//enemy6.pos_x_ = 28;
-	//enemy6.pos_y_ = 2;
-
-	//enemy7.pos_x_ = 5;
-	//enemy7.pos_y_ = 16;
-
-	//enemy8.pos_x_ = 37;
-	//enemy8.pos_y_ = 5;
-
-	//enemy9.pos_x_ = 25;
-	//enemy9.pos_y_ = 12;
+	enemy1.pos_x_ = 7;
+	enemy1.pos_y_ = 5;
 
 	const int i_res = SCR_WIDTH, j_res = SCR_HEIGHT;
 
@@ -169,18 +145,10 @@ int main()
 		}
 	}
 
-	world.GetCellData(9, 7).reward = 1.0;
+	world.GetCellData(6, 5).reward = 1.0;
 
-	world.GetCellData(3, 3).reward = -1.0;
-	//world.GetCellData(4, 3).reward = -1.0;
-	//world.GetCellData(5, 3).reward = -1.0;
-	//world.GetCellData(6, 2).reward = -1.0;
-	//world.GetCellData(17, 4).reward = -1.0;
-	//world.GetCellData(24, 10).reward = -1.0;
-	//world.GetCellData(28, 2).reward = -1.0;
-	//world.GetCellData(5, 16).reward = -1.0;
-	//world.GetCellData(37, 5).reward = -1.0;
-	//world.GetCellData(25, 12).reward = -1.0;
+	world.GetCellData(6, 6).reward = -1.0;
+	world.GetCellData(7, 5).reward = -1.0;
 
 	for (int tr = 0; tr < 100000; tr++)
 	{
@@ -190,8 +158,8 @@ int main()
 		int i_old = i;
 		int j_old = j;               //i_old=0, j_old=0
 
-		float learning_rate = 0.5f;
-		float discount_factor = 0.9f;
+		double learning_rate = 0.1f;
+		double discount_factor = 0.9f;
 
 		switch (action)       //move player
 		{
@@ -230,21 +198,16 @@ int main()
 			world.GetCellData(i_old, j_old).q_[action] += learning_rate*(world.GetCellData(player.pos_x_, player.pos_y_).reward + discount_factor*MAX4(world.GetCellData(player.pos_x_, player.pos_y_).q_[0], world.GetCellData(player.pos_x_, player.pos_y_).q_[1], world.GetCellData(player.pos_x_, player.pos_y_).q_[2], world.GetCellData(player.pos_x_, player.pos_y_).q_[3]) - world.GetCellData(i_old, j_old).q_[action]);
 			//update q values of previous cell (q_t)
 
-			if ((player.pos_x_ == 9 && player.pos_y_ == 7) || (player.pos_x_ == 3 && player.pos_y_ == 3) /*|| (player.pos_x_ == 4 && player.pos_y_ == 3) || (player.pos_x_ == 5 && player.pos_y_ == 3) || (player.pos_x_ == 6 && player.pos_y_ == 2)*//* || (player.pos_x_ == 17 && player.pos_y_ == 4) || (player.pos_x_ == 24 && player.pos_y_ == 10) || (player.pos_x_ == 28 && player.pos_y_ == 2) || (player.pos_x_ == 5 && player.pos_y_ == 16) || (player.pos_x_ == 37 && player.pos_y_ == 5) || (player.pos_x_ == 25 && player.pos_y_ == 12)*/)
+			if ((player.pos_x_ == 6 && player.pos_y_ == 5) || (player.pos_x_ == 6 && player.pos_y_ == 6) || (player.pos_x_ == 7 && player.pos_y_ == 5))
 			{
 				player.pos_x_ = 1;
 				player.pos_y_ = 1;
 			}
 			//reset if agent is in final cells
 		}
-		//cout << world.GetCellData(10,10).q_[0] << endl;
-		//cout << world.GetCellData(10, 10).q_[1] << endl;
-		//cout << world.GetCellData(10, 10).q_[2] << endl;
-		//cout << world.GetCellData(10, 10).q_[3] << endl << endl;
 	}
 
-	player.pos_x_ = 5; player.pos_y_ = 3;
-	int tr = 0;
+	player.pos_x_ = 1; player.pos_y_ = 8;
 	while (true)                  // main game loop
 	{
 		double result = 0.0;
@@ -271,44 +234,33 @@ int main()
 				player.pos_x_++;
 			}
 
-			if ((player.pos_x_ == 9 && player.pos_y_ == 7))
+			if ((player.pos_x_ == 6 && player.pos_y_ == 5))
 			{
 				Gameover();
 				return 0;
 			}
 		}
 
+		else
+			return 0;
+
 		//draw Boundary
 		//drawBoundary();
 
-		//draw player
+		//draw player,enemy
 		char *current_state_p_image = player.image_ + (player.width_ + 1);
 		char *current_state_r_image = player.image_ + (player.width_ + 1);
 
 		char *current_state_e_image = enemy.image_ + (enemy.width_ + 1);
-		//char *current_state_e1_image = enemy1.image_ + (enemy1.width_ + 1);
-		//char *current_state_e2_image = enemy2.image_ + (enemy2.width_ + 1);
-		//char *current_state_e3_image = enemy3.image_ + (enemy3.width_ + 1);
-		//char *current_state_e4_image = enemy4.image_ + (enemy4.width_ + 1);
-		//char *current_state_e5_image = enemy5.image_ + (enemy5.width_ + 1);
-		//char *current_state_e6_image = enemy6.image_ + (enemy6.width_ + 1);
-		//char *current_state_e7_image = enemy7.image_ + (enemy7.width_ + 1);
-		//char *current_state_e8_image = enemy8.image_ + (enemy8.width_ + 1);
-		//char *current_state_e9_image = enemy9.image_ + (enemy9.width_ + 1);
+		char *current_state_e1_image = enemy1.image_ + (enemy1.width_ + 1);
 
+		//player
 		drawToBackBuffer(player.pos_x_, player.pos_y_, player.image_);
 		drawToBackBuffer(reward.pos_x_, reward.pos_y_, reward.image_);
 
+		//enemy
 		drawToBackBuffer(enemy.pos_x_, enemy.pos_y_, enemy.image_);
-		//drawToBackBuffer(enemy1.pos_x_, enemy1.pos_y_, enemy1.image_);
-		//drawToBackBuffer(enemy2.pos_x_, enemy2.pos_y_, enemy2.image_);
-		//drawToBackBuffer(enemy3.pos_x_, enemy3.pos_y_, enemy3.image_);
-		//drawToBackBuffer(enemy4.pos_x_, enemy4.pos_y_, enemy4.image_);
-		//drawToBackBuffer(enemy5.pos_x_, enemy5.pos_y_, enemy5.image_);
-		//drawToBackBuffer(enemy6.pos_x_, enemy6.pos_y_, enemy6.image_);
-		//drawToBackBuffer(enemy7.pos_x_, enemy7.pos_y_, enemy7.image_);
-		//drawToBackBuffer(enemy8.pos_x_, enemy8.pos_y_, enemy8.image_);
-		//drawToBackBuffer(enemy9.pos_x_, enemy9.pos_y_, enemy9.image_);
+		drawToBackBuffer(enemy1.pos_x_, enemy1.pos_y_, enemy1.image_);
 
 		Sleep(50);
 
