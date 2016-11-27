@@ -69,7 +69,7 @@ public:
 	int pos_y_;
 
 	char* image_;     //position(st)
-					//	double reward;
+					  //	double reward;
 
 	my_player()
 		:pos_x_(0), pos_y_(0), width_(1), height_(1)
@@ -105,7 +105,7 @@ void drawBoundary();       //경계선 긋기
 void main()
 {
 	my_player player, reward;
-	enemy enemy,enemy1,enemy2,enemy3, enemy4, enemy5, enemy6, enemy7, enemy8, enemy9;
+	enemy enemy, enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, enemy7, enemy8, enemy9;
 	for (int j = 0; j < SCR_HEIGHT; j++)
 		for (int i = 0; i < SCR_WIDTH; i++)
 		{
@@ -229,7 +229,7 @@ void main()
 
 			world.GetCellData(i_old, j_old).q_[action] += learning_rate*(world.GetCellData(player.pos_x_, player.pos_y_).reward + discount_factor*MAX4(world.GetCellData(player.pos_x_, player.pos_y_).q_[0], world.GetCellData(player.pos_x_, player.pos_y_).q_[1], world.GetCellData(player.pos_x_, player.pos_y_).q_[2], world.GetCellData(player.pos_x_, player.pos_y_).q_[3]) - world.GetCellData(i_old, j_old).q_[action]);
 			//update q values of previous cell (q_t)
-																																																							
+
 			if ((player.pos_x_ == 43 && player.pos_y_ == 19) || (player.pos_x_ == 10 && player.pos_y_ == 5) || (player.pos_x_ == 10 && player.pos_y_ == 15) || (player.pos_x_ == 20 && player.pos_y_ == 8) || (player.pos_x_ == 30 && player.pos_y_ == 11) || (player.pos_x_ == 17 && player.pos_y_ == 4) || (player.pos_x_ == 24 && player.pos_y_ == 10) || (player.pos_x_ == 28 && player.pos_y_ == 2) || (player.pos_x_ == 5 && player.pos_y_ == 16) || (player.pos_x_ == 37 && player.pos_y_ == 5) || (player.pos_x_ == 25 && player.pos_y_ == 12))
 			{
 				player.pos_x_ = 1;
@@ -240,39 +240,39 @@ void main()
 	}
 
 	while (true)                  // main game loop
-	{	
-		
-		if (world.IsInsideGrid(player.pos_x_, player.pos_y_) == true)
+	{
+
+		/*if (world.IsInsideGrid(player.pos_x_, player.pos_y_) == true)
+		{*/
+		/*player.pos_x_ = 1; player.pos_y_ = 1;*/
+		double result = 0.0;
+		result = MAX4(world.GetCellData(player.pos_x_, player.pos_y_).q_[0], world.GetCellData(player.pos_x_, player.pos_y_).q_[1], world.GetCellData(player.pos_x_, player.pos_y_).q_[2], world.GetCellData(player.pos_x_, player.pos_y_).q_[3]);
+
+		if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[0])
 		{
-			player.pos_x_ = 1; player.pos_y_ = 1;
-			double result = 0.0;
-			result=MAX4(world.GetCellData(player.pos_x_, player.pos_y_).q_[0], world.GetCellData(player.pos_x_, player.pos_y_).q_[1], world.GetCellData(player.pos_x_, player.pos_y_).q_[2], world.GetCellData(player.pos_x_, player.pos_y_).q_[3]);
-
-			if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[0])
-			{
-				player.pos_y_++;
-			}
-
-			else if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[1])
-			{
-				player.pos_y_--;
-			}
-
-			else if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[2])
-			{
-				player.pos_x_--;
-			}
-
-			else if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[3])
-			{
-				player.pos_x_++;
-			}
-
-			if (player.pos_x_ == 43 && player.pos_y_ == 19)
-			{
-				Gameover();
-			}
+			player.pos_y_++;
 		}
+
+		else if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[1])
+		{
+			player.pos_y_--;
+		}
+
+		else if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[2])
+		{
+			player.pos_x_--;
+		}
+
+		else if (result == world.GetCellData(player.pos_x_, player.pos_y_).q_[3])
+		{
+			player.pos_x_++;
+		}
+
+		if (player.pos_x_ == 43 && player.pos_y_ == 19)
+		{
+			Gameover();
+		}
+		//}
 		//1. q[0], q[1], q[2], q[3]중에 큰 쪽으로 이동   ->q[0]=up , q[1]=down,  q[2]=left, q[3]=right
 		//2. (73,19)에 이동하면 
 		//3. return 0;
@@ -315,6 +315,19 @@ void main()
 	}
 	//main loop END
 }
+
+//일단 player가 안움직임  ->근데 왜 0,0으로 가지
+//예상 이유 1. 정해진 범위 밖으로 나감
+//			2. ..
+
+
+
+
+
+
+
+
+
 
 void drawToBackBuffer(const int i, const int j, char *image)
 {
